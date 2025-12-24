@@ -321,71 +321,32 @@
 
         animateBounce();
 
-      // ========================================
-// ★★★ 正解ワードの設定（複数・順不同対応） ★★★
-// ========================================
-const CORRECT_SET = '2025.02.14';
+        // ========================================
+        // ★★★ 正解ワードの設定 ★★★
+        // ========================================
+        const CORRECT_ANSWER = '2025.02.14';
+        
+        const form = document.getElementById('quizForm');
+        const input = document.getElementById('answerInput');
+        const errorMessage = document.getElementById('errorMessage');
 
-const form = document.getElementById('quizForm');
-const input = document.getElementById('answerInput');
-const errorMessage = document.getElementById('errorMessage');
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const userAnswer = input.value.trim();
+            
+            if (userAnswer === '') {
+                showError('答えを入力してください');
+                return;
+            }
 
-form.addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    let userAnswer = input.value.trim();
-
-    if (userAnswer === '') {
-        showError('答えを入力してください');
-        return;
-    }
-
-    // ==========================
-    // 正規化処理
-    // ==========================
-
-    // 全角数字 → 半角数字
-    userAnswer = userAnswer.replace(/[０-９]/g, s =>
-        String.fromCharCode(s.charCodeAt(0) - 0xFEE0)
-    );
-
-    // 全角カンマ → 半角カンマ
-    userAnswer = userAnswer.replace(/，/g, ',');
-
-    // 全角・半角スペース → カンマ
-    userAnswer = userAnswer.replace(/[ 　]+/g, ',');
-
-    // 連続カンマを1つに
-    userAnswer = userAnswer.replace(/,+/g, ',');
-
-    // 前後のカンマ除去
-    userAnswer = userAnswer.replace(/^,|,$/g, '');
-
-    // ==========================
-    // 分割・判定
-    // ==========================
-
-    const userSet = userAnswer.split(',');
-
-    if (userSet.length !== 2) {
-        window.location.href = 'incorrect.html';
-        return;
-    }
-
-    const unique = new Set(userSet);
-    if (unique.size !== 2) {
-        window.location.href = 'incorrect.html';
-        return;
-    }
-
-    const isCorrect = CORRECT_SET.every(v => unique.has(v));
-
-    if (isCorrect) {
-        window.location.href = 'correct.html';
-    } else {
-        window.location.href = 'incorrect.html';
-    }
-});
+            // 正解判定
+            if (userAnswer === CORRECT_ANSWER) {
+                window.location.href = 'correct.html';
+            } else {
+                window.location.href = 'incorrect.html';
+            }
+        });
 
         function showError(message) {
             errorMessage.textContent = message;
